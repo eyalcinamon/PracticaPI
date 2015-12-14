@@ -1,0 +1,84 @@
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/book/security.html
+security:
+    encoders:
+        AppBundle\Entity\Usuarios:
+          algorithm: bcrypt
+        Symfony\Component\Security\Core\User\User: plaintext
+
+    # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
+    providers:
+        chain_provider:
+          chain:
+            providers: [in_memory, our_db_provider]
+            
+        our_db_provider:
+          entity:
+            class: AppBundle:Usuarios
+            property: nombre
+            
+        in_memory:
+            memory:
+                users:
+                    patri:
+                        password: test
+                        roles: 'ROLE_ADMIN'
+                    #admin:
+                        #password: admin
+                        #roles: 'ROLE_ADMIN'
+
+    firewalls:
+        #public_area:
+            #anonymous: ~
+            #pattern: ^/
+            
+        user_secured_area:
+            anonymous: ~
+            pattern: ^/*
+            #http_basic:
+                #provider: in_memory
+            #logout: true
+            provider: our_db_provider
+            form_login:
+                # submit the login form here
+                check_path: /login_check
+                # the user is redirected here when they need to log in
+                login_path: /login
+                default_target_path: /home
+                remember_me: true
+            remember_me:
+                key: '%secret%'
+                name: subastasCookie
+                always_remember_me: true
+                lifetime: 300 # 5 min in seconds
+                path: /
+                domain:   ~
+            #logout:
+                #path: /logout
+                #target: target_logout
+                #success_handler: appbundle.security.logout_success_handler
+                
+        # disables authentication for assets and the profiler, adapt it according to your needs
+        #dev:
+            #pattern: ^/(_(profiler|wdt)|css|images|js)/
+            #security: false
+
+        #main:
+            #anonymous: ~
+            #pattern: ^/
+            # activate different ways to authenticate
+
+            # http_basic: ~
+            # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: ~
+            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+    
+    access_control:
+            - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/home, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/*, roles: [IS_AUTHENTICATED_FULLY,IS_AUTHENTICATED_REMEMBERED] }
+            
+            
