@@ -1,0 +1,17 @@
+<form method="post" action="/register">
+	<div>
+		<label for="form_username">Usuario: </label>
+		<input type="text" id="form_username" name=" <?php echo $view['form']->row($form['username']) ?>" />
+		
+		<label for="form_email">Email: </label>
+		<input type="text" id="form_email" name="email" />
+		
+		<label for="form_password">Password: </label>
+		<input type="text" id="form_password" name="form[plainPassword][first]" />
+		
+		<label for="form_password2">Repetir password: </label>
+		<input type="text" id="form_password2" name="form[plainPassword][second]" />
+		
+		<button type="submit">Registrar</button>
+	</div>
+</form>
